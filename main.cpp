@@ -1,4 +1,7 @@
 #include <SFML/Graphics.hpp>
+#include "src/VerletObject.cpp"
+#include "src/Solver.cpp"
+
 
 const int WINDOW_SIZE_X = 1280;
 const int WINDOW_SIZE_Y = 720;
@@ -7,8 +10,18 @@ const int WINDOW_SIZE_Y = 720;
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(WINDOW_SIZE_X, WINDOW_SIZE_Y), "SFML works!");
-	sf::CircleShape shape(100.f);
-	shape.setFillColor(sf::Color::Green);
+
+	Solver solver;
+
+	const int frame_rate = 60;
+	window.setFramerateLimit(frame_rate);
+
+	//solver configuration
+	solver.setSimulationUpdateRate(frame_rate);
+
+	//add objects to solver
+	const sf::Vector2f object_spawn_position = { 500.0f, 200.0f };
+	solver.addObject(object_spawn_position, 30.f);
 
 	while (window.isOpen())
 	{
@@ -20,7 +33,20 @@ int main()
 		}
 
 		window.clear();
-		window.draw(shape);
+		solver.update();
+		//render objects
+		sf::CircleShape circle{ 1.0f };
+		circle.setPointCount(32);
+		circle.setOrigin(1.0f, 1.0f);
+		const std::vector<VerletObject> objects = solver.getObjects();
+		for (VerletObject obj : objects) {
+			circle.setPosition(obj.position);
+			circle.setScale(obj.radius, obj.radius);
+			circle.setFillColor(obj.color);
+			window.draw(circle);
+		}
+
+
 		window.display();
 	}
 
