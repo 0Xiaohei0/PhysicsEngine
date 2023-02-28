@@ -18,14 +18,14 @@ public:
 	{
 		this->position = position;
 		this->radius = radius;
-		position_old = { 0.0f, 0.0f };
+		position_old = position;
 		this->acceleration = { 0.0f, 0.0f };
 	}
 
 	void updatePosition(float dt)
 	{
-		std::cout << position.x << ',' << position.y << std::endl;
 		const sf::Vector2f velocity = position - position_old;
+		std::cout << velocity.x << ',' << velocity.y << std::endl;
 		// Save current position
 		position_old = position;
 		// perform Verlet intergration

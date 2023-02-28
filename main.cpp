@@ -39,7 +39,7 @@ int main()
 		circle.setPointCount(32);
 		circle.setOrigin(1.0f, 1.0f);
 		const std::vector<VerletObject> objects = solver.getObjects();
-		for (VerletObject obj : objects) {
+		for (const VerletObject& obj : objects) {
 			circle.setPosition(obj.position);
 			circle.setScale(obj.radius, obj.radius);
 			circle.setFillColor(obj.color);
