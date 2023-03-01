@@ -1,16 +1,20 @@
 #include <SFML/Graphics.hpp>
-#include "./VerletObject.cpp"
+#include "./VerletObject.hpp"
 
 class Solver
 {
 	sf::Vector2f gravity = { 0.0f, 1000.0f };
 	float frame_dt = 0.0f;
+	float time = 0.0f;
+
 
 public:
 	void update()
 	{
+		time += frame_dt;
 		applyGravity();
 		updatePositions(frame_dt);
+		solveCollisions();
 		//applyConstraint();
 	}
 
@@ -60,9 +64,11 @@ public:
 		}
 	}
 
-	void addObject(sf::Vector2f position, float radius)
+	VerletObject& addObject(sf::Vector2f position, float radius)
 	{
-		objectList.emplace_back(position, radius);
+		VerletObject obj(position, radius);
+		objectList.push_back(obj);
+		return objectList[objectList.size() - 1];
 	}
 
 	std::vector<VerletObject> getObjects() {
@@ -74,6 +80,37 @@ public:
 		frame_dt = 1.0f / static_cast<float>(rate);
 	}
 
+	void solveCollisions()
+	{
+		const auto objectCount = objectList.size();
+		//std::cout << objectCount << std::endl;
+		for (int i = 0; i < objectCount; i++) {
+			VerletObject& object_1 = objectList[i];
+			for (int j = 0; j < objectCount; j++) {
+				if (i == j) continue;
+				VerletObject& object_2 = objectList[j];
+				const sf::Vector2f collision_axis = object_1.position - object_2.position;
+				const float dist = std::sqrt((collision_axis.x * collision_axis.x) + (collision_axis.y * collision_axis.y));
+				//std::cout << dist << std::endl;
+				//std::cout << object_1.position.x << ',' << object_1.position.y << "          " << object_2.position.x << ',' << object_2.position.y << std::endl;
+				if (dist <= (object_1.radius + object_2.radius)) {
+					const sf::Vector2f n = collision_axis / dist;
+					const float delta = (object_1.radius + object_2.radius) - dist;
+					object_1.position += 0.5f * delta * n;
+					object_2.position -= 0.5f * delta * n;
+				}
+			}
+		}
+	}
+
+	size_t getObjectsCount() {
+		return objectList.size();
+	}
+
+	float getTime() const
+	{
+		return time;
+	}
 
 private:
 	std::vector<VerletObject> objectList;

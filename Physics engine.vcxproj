@@ -136,8 +136,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Solver.cpp" />
-    <ClCompile Include="VerletObject.cpp" />
+    <ClCompile Include="Solver.hpp" />
+    <ClCompile Include="VerletObject.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
