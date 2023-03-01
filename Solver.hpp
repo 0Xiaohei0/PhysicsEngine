@@ -66,12 +66,11 @@ public:
 
 	VerletObject& addObject(sf::Vector2f position, float radius)
 	{
-		VerletObject obj(position, radius);
-		objectList.push_back(obj);
-		return objectList[objectList.size() - 1];
+		objectList.emplace_back(position, radius);
+		return objectList.back();
 	}
 
-	std::vector<VerletObject> getObjects() {
+	std::vector<VerletObject>& getObjects() {
 		return objectList;
 	}
 
@@ -84,11 +83,9 @@ public:
 	{
 		const auto objectCount = objectList.size();
 		//std::cout << objectCount << std::endl;
-		for (int i = 0; i < objectCount; i++) {
-			VerletObject& object_1 = objectList[i];
-			for (int j = 0; j < objectCount; j++) {
-				if (i == j) continue;
-				VerletObject& object_2 = objectList[j];
+		for (VerletObject& object_1 : objectList) {
+			for (VerletObject& object_2 : objectList) {
+				if (std::addressof(object_1) == std::addressof(object_2)) continue;
 				const sf::Vector2f collision_axis = object_1.position - object_2.position;
 				const float dist = std::sqrt((collision_axis.x * collision_axis.x) + (collision_axis.y * collision_axis.y));
 				//std::cout << dist << std::endl;
@@ -101,6 +98,11 @@ public:
 				}
 			}
 		}
+	}
+
+	void setObjectVelocity(VerletObject& object, sf::Vector2f v)
+	{
+		object.setVelocity(v, frame_dt);
 	}
 
 	size_t getObjectsCount() {

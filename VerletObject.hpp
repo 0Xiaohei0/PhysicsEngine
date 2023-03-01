@@ -20,7 +20,7 @@ public:
 	{
 		this->position = position;
 		this->radius = radius;
-		position_old = position - sf::Vector2f(-3.0f, -3.0f);
+		position_old = position - sf::Vector2f(0.0f, 0.0f);
 		this->acceleration = { 0.0f, 0.0f };
 	}
 
@@ -59,6 +59,11 @@ public:
 			position.y = 0 + radius;
 			position_old.y = position.y + velocity.y * bounce;
 		}
+	}
+
+	void setVelocity(sf::Vector2f v, float dt)
+	{
+		position_old = position - (v * dt);
 	}
 
 	void setAcceleration(sf::Vector2f acc)
