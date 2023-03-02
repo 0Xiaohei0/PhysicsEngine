@@ -22,8 +22,10 @@ void BoxesDemo::runDemo() {
 	window.setFramerateLimit(frame_rate);
 
 	//setup Objects
-	VerletObject& p1 = solver.addObject(sf::Vector2f(200.0f, 200.0f), 10.0f);
-	VerletObject& p2 = solver.addObject(sf::Vector2f(230.0f, 200.0f), 10.0f);
+	VerletObject& p1 = solver.addObject(sf::Vector2f(500.0f, 200.0f), 10.0f);
+	VerletObject& p2 = solver.addObject(sf::Vector2f(530.0f, 200.0f), 10.0f);
+	solver.setObjectVelocity(p1, sf::Vector2f(300.0f, 0.3f));
+
 	solver.addStick(p1, p2);
 
 	while (window.isOpen())

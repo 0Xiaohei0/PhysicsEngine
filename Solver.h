@@ -28,6 +28,7 @@ public:
 	Stick& addStick(VerletObject& p1, VerletObject& p2);
 
 	std::vector<VerletObject>& getObjects();
+	std::vector<Stick>& getSticks();
 
 	void setSimulationUpdateRate(int rate);
 

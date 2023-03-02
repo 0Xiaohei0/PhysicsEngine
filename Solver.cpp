@@ -1,13 +1,17 @@
 #include <SFML/Graphics.hpp>
 #include "VerletObject.h"
 #include "Solver.h"
+#include <iostream>
 
 Solver::Solver() {
-
+	objectList.reserve(10000);
+	stickList.reserve(10000);
 }
 
 Solver::Solver(int SimulationUpdateRate, int subStepsCount)
 {
+	objectList.reserve(10000);
+	stickList.reserve(10000);
 	setSimulationUpdateRate(SimulationUpdateRate);
 	setSubStepsCount(subStepsCount);
 }
@@ -20,7 +24,7 @@ void Solver::update()
 		applyGravity();
 		updatePositions(step_dt);
 		solveCollisions();
-		//updateSticks();
+		updateSticks();
 	}
 }
 
@@ -56,12 +60,21 @@ VerletObject& Solver::addObject(sf::Vector2f position, float radius)
 
 Stick& Solver::addStick(VerletObject& p1, VerletObject& p2)
 {
+	std::cout << "p1-2: " << p1.position.x << ',' << p1.position.y << std::endl;
 	stickList.emplace_back(p1, p2);
+
+	std::cout << objectList.front().position.x << ',' << objectList.front().position.y << std::endl;
+	std::cout << stickList.back().point1.position.x << ',' << stickList.back().point1.position.y << std::endl;
 	return stickList.back();
 }
 
 std::vector<VerletObject>& Solver::getObjects() {
 	return objectList;
+}
+
+std::vector<Stick>& Solver::getSticks()
+{
+	return stickList;
 }
 
 void Solver::setSimulationUpdateRate(int rate)
