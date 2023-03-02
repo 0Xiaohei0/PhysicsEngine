@@ -37,8 +37,10 @@ public:
 		// Reset acceleration
 		acceleration = {};
 
-		float width = 1280;
+		float width = 880;
 		float height = 720;
+		float startx = 400;
+		float starty = 0;
 		float rightbound = position.x + radius;
 		float leftbound = position.x - radius;
 		float topbound = position.y - radius;
@@ -47,16 +49,16 @@ public:
 			position.x = width - radius;
 			position_old.x = position.x + velocity.x * bounce;
 		}
-		else if (leftbound < 0) {
-			position.x = 0 + radius;
+		else if (leftbound < startx) {
+			position.x = startx + radius;
 			position_old.x = position.x + velocity.x * bounce;
 		}
 		if (bottombound > height) {
 			position.y = height - radius;
 			position_old.y = position.y + velocity.y * bounce;
 		}
-		else if (topbound < 0) {
-			position.y = 0 + radius;
+		else if (topbound < starty) {
+			position.y = starty + radius;
 			position_old.y = position.y + velocity.y * bounce;
 		}
 	}

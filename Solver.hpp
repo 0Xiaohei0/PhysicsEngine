@@ -12,10 +12,13 @@ public:
 	void update()
 	{
 		time += frame_dt;
-		applyGravity();
-		updatePositions(frame_dt);
-		solveCollisions();
-		//applyConstraint();
+		const float step_dt = getStepDt();
+		for (uint32_t i{ sub_steps }; i--;) {
+			applyGravity();
+			updatePositions(step_dt);
+			solveCollisions();
+			//applyConstraint();
+		}
 	}
 
 	void applyGravity()
@@ -102,7 +105,7 @@ public:
 
 	void setObjectVelocity(VerletObject& object, sf::Vector2f v)
 	{
-		object.setVelocity(v, frame_dt);
+		object.setVelocity(v, getStepDt());
 	}
 
 	size_t getObjectsCount() {
@@ -113,7 +116,16 @@ public:
 	{
 		return time;
 	}
+	void setSubStepsCount(uint32_t sub_steps)
+	{
+		this->sub_steps = sub_steps;
+	}
+	float getStepDt() const
+	{
+		return frame_dt / static_cast<float>(sub_steps);
+	}
 
 private:
+	uint32_t                  sub_steps = 1;
 	std::vector<VerletObject> objectList;
 };

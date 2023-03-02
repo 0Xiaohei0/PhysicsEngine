@@ -1,24 +1,42 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Image.hpp>
+#include <list>
 #include "VerletObject.hpp"
 #include "Solver.hpp"
 #include "FPS.cpp"
 
 
 const int WINDOW_SIZE_X = 1280;
-
 const int WINDOW_SIZE_Y = 720;
 
+const int frame_rate = 60;
 const uint32_t     max_objects_count = 300;
-const float        object_spawn_delay = 0.025f;
+const float        object_spawn_delay = 0.010f;
+const float        snapshotDelay = 5.0f;
+const float        displayDelay = 5.0f;
 const float        object_spawn_speed = 1200.0f;
 const sf::Vector2f object_spawn_position = { 500.0f, 200.0f };
-const float        object_min_radius = 20.0f;
-const float        object_max_radius = 35.0f;
+const sf::Vector2f object_spawn_position2 = { 300.0f, 200.0f };
+const float        object_min_radius = 3.0f;
+const float        object_max_radius = 8.0f;
 const float		   PI = 3.1415926535897932386f;
 const float        max_angle = 1.0f;
 FPS fps;
 sf::Font font;
+std::list<sf::Color> colorSnapshot;
+Solver solver;
+sf::Image image;
+
+enum State
+{
+	SIMULATION,
+	DISPLAY,
+	PLAYBACK,
+};
+
+State state = SIMULATION;
+
+
 
 static sf::Color getRainbow(float t)
 {
@@ -30,11 +48,28 @@ static sf::Color getRainbow(float t)
 			static_cast<uint8_t>(255.0f * b * b) };
 }
 
+void reset() {
+	auto& objects = solver.getObjects();
+	for (VerletObject& obj : objects) {
+		colorSnapshot.push_back(image.getPixel((int)obj.position.x, (int)obj.position.y));
+	}
+	solver = Solver();
+	//solver configuration
+	solver.setSimulationUpdateRate(frame_rate);
+	solver.getObjects().reserve(1000000);
+	solver.setSubStepsCount(8);
+	srand(10);
+	std::cout << "Pass2: " << std::endl;
+	for (int i = 0; i < 10; i++) {
+		std::cout << rand() << std::endl;
+	}
+}
+
 int main()
 {
 	sf::RenderWindow window(sf::VideoMode(WINDOW_SIZE_X, WINDOW_SIZE_Y), "SFML works!");
 
-	sf::Image image;
+
 	if (!image.loadFromFile("bocchi.jpg"))
 	{
 		std::cout << "Error loading image." << std::endl;
@@ -49,17 +84,16 @@ int main()
 	FPSCounterText.setCharacterSize(24);
 	FPSCounterText.setFillColor(sf::Color::Red);
 
-	Solver solver;
-
-	const int frame_rate = 144;
 	window.setFramerateLimit(frame_rate);
 
 	//solver configuration
 	solver.setSimulationUpdateRate(frame_rate);
+	solver.getObjects().reserve(1000000);
+	solver.setSubStepsCount(8);
 
 	sf::Clock clock;
-
-
+	sf::Clock mainclock;
+	sf::Clock displayClock;
 	//add objects to solver
 	//solver.addObject({ 310.0f, 330.0f }, 10.f);
 	//solver.addObject({ 300.0f, 300.0f }, 10.f);
@@ -84,7 +118,10 @@ int main()
 	//	std::cout << rand() << std::endl;
 	//}
 	srand(10);
-
+	std::cout << "Pass1: " << std::endl;
+	for (int i = 0; i < 10; i++) {
+		std::cout << rand() << std::endl;
+	}
 	while (window.isOpen())
 	{
 		sf::Event event;
@@ -95,35 +132,62 @@ int main()
 		}
 		window.clear();
 
-		fps.update();
-		FPSCounterText.setString(std::to_string(fps.getFPS()));
-		window.draw(FPSCounterText);
+
 
 		std::vector<VerletObject>& objects = solver.getObjects();
+		if (state == SIMULATION) {
+			if (solver.getObjectsCount() < max_objects_count && clock.getElapsedTime().asSeconds() >= object_spawn_delay) {
+				clock.restart();
+				auto& object = solver.addObject(object_spawn_position, ((float)rand() / (RAND_MAX + 1)) * (object_max_radius - object_min_radius + 1) + object_min_radius);
+				const float t = solver.getTime();
+				const float angle = max_angle * sin(t) + PI * 0.5f;
+				solver.setObjectVelocity(object, object_spawn_speed * sf::Vector2f{ cos(angle), sin(angle) });
+				//object.color = image.getPixel((int)object.position.x, (int)object.position.y);
+			}
+			//std::cout << solver.getObjectsCount() << std::endl;
+			if (mainclock.getElapsedTime().asSeconds() >= snapshotDelay) {
+				state = DISPLAY;
+				displayClock.restart();
+			}
+			//for (VerletObject& obj : objects) {
+			//	if ((int)obj.position.x <= 0 || (int)obj.position.x >= WINDOW_SIZE_X ||
+			//		(int)obj.position.y <= 0 || (int)obj.position.y <= WINDOW_SIZE_Y)
+			//		continue;
+			//	obj.color = image.getPixel((int)obj.position.x, (int)obj.position.y);
+			//}
 
-		if (solver.getObjectsCount() < max_objects_count && clock.getElapsedTime().asSeconds() >= object_spawn_delay) {
-			clock.restart();
-			auto& object = solver.addObject(object_spawn_position, ((float)rand() / (RAND_MAX + 1)) * (object_max_radius - object_min_radius + 1) + object_min_radius);
-			const float t = solver.getTime();
-			const float angle = max_angle * sin(t) + PI * 0.5f;
-			solver.setObjectVelocity(object, object_spawn_speed * sf::Vector2f{ cos(angle), sin(angle) });
-			//object.color = image.getPixel((int)object.position.x, (int)object.position.y);
+			//const sf::Vector2f position(0, 0.0f);
+			//const float radius = 300.0f;
+			//sf::CircleShape constriant{ radius };
+			//constriant.setFillColor(sf::Color::Green);
+			//constriant.setPosition(position);
+			//window.draw(constriant);
 		}
-
-		for (VerletObject& obj : objects) {
-			obj.color = image.getPixel((int)obj.position.x, (int)obj.position.y);;
+		if (state == DISPLAY) {
+			if (displayClock.getElapsedTime().asSeconds() >= displayDelay) {
+				state = PLAYBACK;
+				reset();
+			}
+			for (VerletObject& obj : objects) {
+				obj.color = image.getPixel((int)obj.position.x, (int)obj.position.y);
+			}
 		}
-
-
-		solver.update();
-
-
-		//const sf::Vector2f position(0, 0.0f);
-		//const float radius = 300.0f;
-		//sf::CircleShape constriant{ radius };
-		//constriant.setFillColor(sf::Color::Green);
-		//constriant.setPosition(position);
-		//window.draw(constriant);
+		if (state == PLAYBACK) {
+			if (solver.getObjectsCount() < max_objects_count && clock.getElapsedTime().asSeconds() >= object_spawn_delay) {
+				clock.restart();
+				auto& object = solver.addObject(object_spawn_position, ((float)rand() / (RAND_MAX + 1)) * (object_max_radius - object_min_radius + 1) + object_min_radius);
+				const float t = solver.getTime();
+				const float angle = max_angle * sin(t) + PI * 0.5f;
+				solver.setObjectVelocity(object, object_spawn_speed * sf::Vector2f{ cos(angle), sin(angle) });
+				if (!colorSnapshot.empty())
+				{
+					object.color = colorSnapshot.front();
+					colorSnapshot.pop_front();
+				}
+				//object.color = image.getPixel((int)object.position.x, (int)object.position.y);
+			}
+			//std::cout << solver.getObjectsCount() << std::endl;
+		}
 
 		//render objects
 
@@ -144,8 +208,11 @@ int main()
 			circle2.setFillColor(obj.color);
 			window.draw(circle2);
 		}
+		fps.update();
+		FPSCounterText.setString(std::to_string(fps.getFPS()));
+		window.draw(FPSCounterText);
 
-
+		solver.update();
 
 
 		window.display();
