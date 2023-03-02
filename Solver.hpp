@@ -3,7 +3,7 @@
 
 class Solver
 {
-	sf::Vector2f gravity = { 0.0f, 1000.0f };
+	sf::Vector2f gravity = { 0.0f, 3000.0f };
 	float frame_dt = 0.0f;
 	float time = 0.0f;
 

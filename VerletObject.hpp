@@ -13,7 +13,7 @@ public:
 
 	float        radius = 10.0f;
 	sf::Color    color = sf::Color::White;
-	float		 bounce = 0.5f;
+	float		 bounce = 1.0f;
 	float		 friction = 0.999f;
 
 	VerletObject(sf::Vector2f position, float radius)
@@ -27,7 +27,7 @@ public:
 	void updatePosition(float dt)
 	{
 		sf::Vector2f velocity = position - position_old;
-		velocity = velocity * friction;
+		velocity = velocity;
 		//std::cout << position.x << ',' << position.y << ' ' << position_old.x << ',' << position_old.y << "        ";
 		//std::cout << velocity.x << ',' << velocity.y << std::endl;
 		// Save current position

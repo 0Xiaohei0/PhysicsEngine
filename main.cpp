@@ -10,9 +10,9 @@ const int WINDOW_SIZE_X = 1280;
 const int WINDOW_SIZE_Y = 720;
 
 const int frame_rate = 60;
-const uint32_t     max_objects_count = 300;
+const uint32_t     max_objects_count = 1600;
 const float        object_spawn_delay = 0.010f;
-const float        snapshotDelay = 5.0f;
+const float        snapshotDelay = 30.0f;
 const float        displayDelay = 5.0f;
 const float        object_spawn_speed = 1200.0f;
 const sf::Vector2f object_spawn_position = { 500.0f, 200.0f };
@@ -26,6 +26,9 @@ sf::Font font;
 std::list<sf::Color> colorSnapshot;
 Solver solver;
 sf::Image image;
+
+std::list<std::list<VerletObject>> playbackBuffer;
+
 
 enum State
 {
@@ -49,20 +52,32 @@ static sf::Color getRainbow(float t)
 }
 
 void reset() {
-	auto& objects = solver.getObjects();
-	for (VerletObject& obj : objects) {
-		colorSnapshot.push_back(image.getPixel((int)obj.position.x, (int)obj.position.y));
+	std::vector<VerletObject>& objects = solver.getObjects();
+	int objectsSize = objects.size();
+	for (std::list<VerletObject>& snapshot : playbackBuffer) {
+		int idx = 0;
+		for (VerletObject& obj : snapshot) {
+			if (idx < objectsSize) {
+				obj.color = objects.at(idx).color;
+				idx++;
+			}
+		}
 	}
-	solver = Solver();
-	//solver configuration
-	solver.setSimulationUpdateRate(frame_rate);
-	solver.getObjects().reserve(1000000);
-	solver.setSubStepsCount(8);
-	srand(10);
-	std::cout << "Pass2: " << std::endl;
+
+	//auto& objects = solver.getObjects();
+	//for (VerletObject& obj : objects) {
+	//	colorSnapshot.push_back(image.getPixel((int)obj.position.x, (int)obj.position.y));
+	//}
+	//solver = Solver();
+	////solver configuration
+	//solver.setSimulationUpdateRate(frame_rate);
+	//solver.getObjects().reserve(1000000);
+	//solver.setSubStepsCount(8);
+	//srand(10);
+	/*std::cout << "Pass2: " << std::endl;
 	for (int i = 0; i < 10; i++) {
 		std::cout << rand() << std::endl;
-	}
+	}*/
 }
 
 int main()
@@ -118,10 +133,10 @@ int main()
 	//	std::cout << rand() << std::endl;
 	//}
 	srand(10);
-	std::cout << "Pass1: " << std::endl;
+	/*std::cout << "Pass1: " << std::endl;
 	for (int i = 0; i < 10; i++) {
 		std::cout << rand() << std::endl;
-	}
+	}*/
 	while (window.isOpen())
 	{
 		sf::Event event;
@@ -171,42 +186,57 @@ int main()
 			for (VerletObject& obj : objects) {
 				obj.color = image.getPixel((int)obj.position.x, (int)obj.position.y);
 			}
+
 		}
 		if (state == PLAYBACK) {
-			if (solver.getObjectsCount() < max_objects_count && clock.getElapsedTime().asSeconds() >= object_spawn_delay) {
-				clock.restart();
-				auto& object = solver.addObject(object_spawn_position, ((float)rand() / (RAND_MAX + 1)) * (object_max_radius - object_min_radius + 1) + object_min_radius);
-				const float t = solver.getTime();
-				const float angle = max_angle * sin(t) + PI * 0.5f;
-				solver.setObjectVelocity(object, object_spawn_speed * sf::Vector2f{ cos(angle), sin(angle) });
-				if (!colorSnapshot.empty())
-				{
-					object.color = colorSnapshot.front();
-					colorSnapshot.pop_front();
-				}
-				//object.color = image.getPixel((int)object.position.x, (int)object.position.y);
-			}
-			//std::cout << solver.getObjectsCount() << std::endl;
+			//if (solver.getObjectsCount() < max_objects_count && clock.getElapsedTime().asSeconds() >= object_spawn_delay) {
+			//	clock.restart();
+			//	auto& object = solver.addObject(object_spawn_position, ((float)rand() / (RAND_MAX + 1)) * (object_max_radius - object_min_radius + 1) + object_min_radius);
+			//	const float t = solver.getTime();
+			//	const float angle = max_angle * sin(t) + PI * 0.5f;
+			//	solver.setObjectVelocity(object, object_spawn_speed * sf::Vector2f{ cos(angle), sin(angle) });
+			//	if (!colorSnapshot.empty())
+			//	{
+			//		object.color = colorSnapshot.front();
+			//		colorSnapshot.pop_front();
+			//	}
+			//	//object.color = image.getPixel((int)object.position.x, (int)object.position.y);
+			//}
+			////std::cout << solver.getObjectsCount() << std::endl;
 		}
 
 		//render objects
+		if (state == SIMULATION || state == DISPLAY) {
+			std::list<VerletObject> currentSnapshot;
+			for (VerletObject& obj : objects) {
 
-		for (const VerletObject& obj : objects) {
-			//sf::CircleShape circle{ 1.0f };
-			//circle.setPointCount(32);
-			//circle.setOrigin(1.0f, 1.0f);
-			//circle.setPosition(obj.position_old);
-			//circle.setScale(obj.radius, obj.radius);
-			//circle.setFillColor(sf::Color::Magenta);
-			//window.draw(circle);
-
-			sf::CircleShape circle2{ 1.0f };
-			circle2.setPointCount(32);
-			circle2.setOrigin(1.0f, 1.0f);
-			circle2.setPosition(obj.position);
-			circle2.setScale(obj.radius, obj.radius);
-			circle2.setFillColor(obj.color);
-			window.draw(circle2);
+				sf::CircleShape circle2{ 1.0f };
+				circle2.setPointCount(32);
+				circle2.setOrigin(1.0f, 1.0f);
+				circle2.setPosition(obj.position);
+				circle2.setScale(obj.radius, obj.radius);
+				circle2.setFillColor(obj.color);
+				window.draw(circle2);
+				currentSnapshot.push_back(obj);
+			}
+			playbackBuffer.push_back(currentSnapshot);
+			std::cout << playbackBuffer.back().size() << std::endl;
+		}
+		else if (state == PLAYBACK) {
+			std::cout << playbackBuffer.size() << std::endl;
+			if (!playbackBuffer.empty()) {
+				std::list<VerletObject> snapshot = playbackBuffer.front();
+				for (const VerletObject& obj : snapshot) {
+					sf::CircleShape circle2{ 1.0f };
+					circle2.setPointCount(32);
+					circle2.setOrigin(1.0f, 1.0f);
+					circle2.setPosition(obj.position);
+					circle2.setScale(obj.radius, obj.radius);
+					circle2.setFillColor(obj.color);
+					window.draw(circle2);
+				}
+				playbackBuffer.pop_front();
+			}
 		}
 		fps.update();
 		FPSCounterText.setString(std::to_string(fps.getFPS()));
