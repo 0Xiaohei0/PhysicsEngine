@@ -28,15 +28,13 @@ public:
 	{
 		sf::Vector2f velocity = position - position_old;
 		velocity = velocity;
-		//std::cout << position.x << ',' << position.y << ' ' << position_old.x << ',' << position_old.y << "        ";
-		//std::cout << velocity.x << ',' << velocity.y << std::endl;
-		// Save current position
 		position_old = position;
 		// perform Verlet intergration
 		position = position + velocity + acceleration * dt * dt;
 		// Reset acceleration
 		acceleration = {};
 
+		// bound checking
 		float width = 880;
 		float height = 720;
 		float startx = 400;
