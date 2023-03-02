@@ -19,8 +19,8 @@ void Solver::update()
 	for (uint32_t i{ sub_steps }; i--;) {
 		applyGravity();
 		updatePositions(step_dt);
-		updateSticks();
 		solveCollisions();
+		//updateSticks();
 	}
 }
 

@@ -8,7 +8,7 @@ private:
 	uint32_t                  sub_steps = 1;
 	std::vector<VerletObject> objectList;
 	std::vector<Stick> stickList;
-	float frame_dt = 0.0f;
+	float frame_dt = 0.01666666666f;
 	float time = 0.0f;
 
 public:
