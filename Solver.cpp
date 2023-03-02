@@ -1,5 +1,5 @@
 #include <SFML/Graphics.hpp>
-#include "./VerletObject.hpp"
+#include "./VerletObject.cpp"
 
 class Solver
 {

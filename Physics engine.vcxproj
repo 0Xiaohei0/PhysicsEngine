@@ -136,9 +136,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Solver.hpp" />
+    <ClCompile Include="Solver.cpp" />
     <ClCompile Include="fps.cpp" />
-    <ClCompile Include="VerletObject.hpp" />
+    <ClCompile Include="particleImageDemo.cpp" />
+    <ClCompile Include="VerletObject.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
