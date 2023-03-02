@@ -1,26 +1,17 @@
 #include <SFML/Graphics.hpp>
+#include "Fps.h"
 
-class FPS
+
+FPS::FPS() : mFrame(0), mFps(0) {}
+const unsigned int FPS::getFPS() const { return mFps; }
+
+void FPS::update()
 {
-public:
-	FPS() : mFrame(0), mFps(0) {}
-	const unsigned int getFPS() const { return mFps; }
-
-private:
-	unsigned int mFrame;
-	unsigned int mFps;
-	sf::Clock mClock;
-
-public:
-	void update()
+	if (mClock.getElapsedTime().asSeconds() >= 1.f)
 	{
-		if (mClock.getElapsedTime().asSeconds() >= 1.f)
-		{
-			mFps = mFrame;
-			mFrame = 0;
-			mClock.restart();
-		}
-
-		++mFrame;
+		mFps = mFrame;
+		mFrame = 0;
+		mClock.restart();
 	}
-};
+	++mFrame;
+}

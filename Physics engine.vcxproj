@@ -135,11 +135,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BoxesDemo.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Solver.cpp" />
     <ClCompile Include="fps.cpp" />
     <ClCompile Include="particleImageDemo.cpp" />
     <ClCompile Include="VerletObject.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BoxesDemo.h" />
+    <ClInclude Include="Fps.h" />
+    <ClInclude Include="particleImageDemo.h" />
+    <ClInclude Include="Solver.h" />
+    <ClInclude Include="VerletObject.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
