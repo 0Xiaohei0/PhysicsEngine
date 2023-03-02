@@ -18,7 +18,6 @@ private:
 
 	FPS fps;
 	sf::Font font;
-
 	Solver solver;
 };
 

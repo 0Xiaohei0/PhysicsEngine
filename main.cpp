@@ -4,8 +4,8 @@
 
 int main()
 {
-	ParticleImageDemo particleImageDemo;
-	particleImageDemo.runParticleImageDemo();
+	//ParticleImageDemo particleImageDemo;
+	//particleImageDemo.runParticleImageDemo();
 	BoxesDemo boxDemo;
 	boxDemo.runDemo();
 	return 0;

@@ -19,6 +19,11 @@ void ParticleImageDemo::reset() {
 	}
 }
 
+ParticleImageDemo::ParticleImageDemo()
+{
+	solver = Solver(frame_rate, 8);
+}
+
 int ParticleImageDemo::runParticleImageDemo()
 {
 	sf::RenderWindow window(sf::VideoMode(WINDOW_SIZE_X, WINDOW_SIZE_Y), "anime physics");
@@ -38,11 +43,6 @@ int ParticleImageDemo::runParticleImageDemo()
 	FPSCounterText.setFillColor(sf::Color::Red);
 
 	window.setFramerateLimit(frame_rate);
-
-	//solver configuration
-	solver.setSimulationUpdateRate(frame_rate);
-	solver.getObjects().reserve(1000000);
-	solver.setSubStepsCount(8);
 
 	sf::Clock clock;
 	sf::Clock mainclock;

@@ -40,5 +40,6 @@ class ParticleImageDemo
 	void reset();
 
 public:
+	ParticleImageDemo();
 	int runParticleImageDemo();
 };

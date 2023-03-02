@@ -140,6 +140,7 @@
     <ClCompile Include="Solver.cpp" />
     <ClCompile Include="fps.cpp" />
     <ClCompile Include="particleImageDemo.cpp" />
+    <ClCompile Include="Stick.cpp" />
     <ClCompile Include="VerletObject.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -147,6 +148,7 @@
     <ClInclude Include="Fps.h" />
     <ClInclude Include="particleImageDemo.h" />
     <ClInclude Include="Solver.h" />
+    <ClInclude Include="Stick.h" />
     <ClInclude Include="VerletObject.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

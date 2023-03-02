@@ -2,6 +2,15 @@
 #include "VerletObject.h"
 #include "Solver.h"
 
+Solver::Solver() {
+
+}
+
+Solver::Solver(int SimulationUpdateRate, int subStepsCount)
+{
+	setSimulationUpdateRate(SimulationUpdateRate);
+	setSubStepsCount(subStepsCount);
+}
 
 void Solver::update()
 {
@@ -10,6 +19,7 @@ void Solver::update()
 	for (uint32_t i{ sub_steps }; i--;) {
 		applyGravity();
 		updatePositions(step_dt);
+		updateSticks();
 		solveCollisions();
 	}
 }
@@ -30,10 +40,24 @@ void Solver::updatePositions(float dt)
 	}
 }
 
+void Solver::updateSticks()
+{
+	for (size_t i = 0; i < stickList.size(); i++) {
+		Stick& s = stickList.at(i);
+		s.updatePosition();
+	}
+}
+
 VerletObject& Solver::addObject(sf::Vector2f position, float radius)
 {
 	objectList.emplace_back(position, radius);
 	return objectList.back();
+}
+
+Stick& Solver::addStick(VerletObject& p1, VerletObject& p2)
+{
+	stickList.emplace_back(p1, p2);
+	return stickList.back();
 }
 
 std::vector<VerletObject>& Solver::getObjects() {
