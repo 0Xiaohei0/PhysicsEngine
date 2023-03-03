@@ -7,6 +7,7 @@ public:
 	sf::Vector2f position;
 	sf::Vector2f position_old;
 	sf::Vector2f acceleration;
+	bool pinned = false;
 
 	float        radius = 10.0f;
 	sf::Color    color = sf::Color::White;
@@ -14,6 +15,8 @@ public:
 	float		 friction = 0.999f;
 
 	VerletObject(sf::Vector2f position, float radius);
+
+	VerletObject(sf::Vector2f position, float radius, bool pinned);
 
 	void updatePosition(float dt);
 

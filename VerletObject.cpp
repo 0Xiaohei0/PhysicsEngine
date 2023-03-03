@@ -14,6 +14,15 @@ VerletObject::VerletObject(sf::Vector2f position, float radius)
 	this->acceleration = { 0.0f, 0.0f };
 }
 
+VerletObject::VerletObject(sf::Vector2f position, float radius, bool pinned)
+{
+	this->position = position;
+	this->radius = radius;
+	position_old = position - sf::Vector2f(0.0f, 0.0f);
+	this->acceleration = { 0.0f, 0.0f };
+	this->pinned = pinned;
+}
+
 void VerletObject::updatePosition(float dt)
 {
 	sf::Vector2f velocity = position - position_old;

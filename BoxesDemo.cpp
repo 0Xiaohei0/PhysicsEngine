@@ -21,14 +21,21 @@ void BoxesDemo::runDemo() {
 	FPSCounterText.setFillColor(sf::Color::Red);
 	window.setFramerateLimit(frame_rate);
 	//solver.setGravity(sf::Vector2f(0.0f, 0.0f));
+	solver.setConstraint(0, 0, 1280, 720);
 
 	//setup Objects
 	std::vector< std::reference_wrapper<VerletObject>> points;
 	points.push_back(solver.addObject(sf::Vector2f(500.0f, 200.0f), 2.0f));
-	points.push_back(solver.addObject(sf::Vector2f(520.0f, 200.0f), 2.0f));
-	points.push_back(solver.addObject(sf::Vector2f(520.0f, 220.0f), 2.0f));
-	points.push_back(solver.addObject(sf::Vector2f(500.0f, 220.0f), 2.0f));
+	points.push_back(solver.addObject(sf::Vector2f(550.0f, 200.0f), 2.0f));
+	points.push_back(solver.addObject(sf::Vector2f(550.0f, 250.0f), 2.0f));
+	points.push_back(solver.addObject(sf::Vector2f(500.0f, 250.0f), 2.0f));
 	solver.setObjectVelocity(points.at(0), sf::Vector2f(300.0f, 0.3f));
+
+	points.push_back(solver.addObject(sf::Vector2f(400.0f, 200.0f), 2.0f));
+	points.push_back(solver.addObject(sf::Vector2f(300.0f, 200.0f), 2.0f));
+	points.push_back(solver.addObject(sf::Vector2f(100.0f, 200.0f), 2.0f, true));
+
+
 
 	solver.addStick(points.at(0), points.at(1));
 	solver.addStick(points.at(1), points.at(2));
@@ -36,6 +43,10 @@ void BoxesDemo::runDemo() {
 	solver.addStick(points.at(3), points.at(0));
 	solver.addStick(points.at(0), points.at(2));
 	solver.addStick(points.at(1), points.at(3));
+
+	solver.addStick(points.at(0), points.at(4));
+	solver.addStick(points.at(4), points.at(5));
+	solver.addStick(points.at(5), points.at(6));
 
 	while (window.isOpen())
 	{

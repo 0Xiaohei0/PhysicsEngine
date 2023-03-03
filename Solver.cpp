@@ -41,7 +41,10 @@ void Solver::updatePositions(float dt)
 {
 	for (auto& obj : objectList)
 	{
-		obj.updatePosition(dt);
+		if (!obj.pinned)
+		{
+			obj.updatePosition(dt);
+		}
 	}
 }
 
@@ -89,6 +92,12 @@ void Solver::ConstrainObjects() {
 VerletObject& Solver::addObject(sf::Vector2f position, float radius)
 {
 	objectList.emplace_back(position, radius);
+	return objectList.back();
+}
+
+VerletObject& Solver::addObject(sf::Vector2f position, float radius, bool pinned)
+{
+	objectList.emplace_back(position, radius, pinned);
 	return objectList.back();
 }
 
@@ -154,6 +163,14 @@ void Solver::setSubStepsCount(uint32_t sub_steps)
 float Solver::getStepDt() const
 {
 	return frame_dt / static_cast<float>(sub_steps);
+}
+
+void Solver::setConstraint(int start_x, int start_y, int width, int height)
+{
+	START_X = start_x;
+	START_Y = start_y;
+	CONSTRAINT_WIDTH = width;
+	HEIGHT = height;
 }
 
 void Solver::setGravity(sf::Vector2f gravity)

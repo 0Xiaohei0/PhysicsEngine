@@ -14,6 +14,8 @@ void Stick::updatePosition()
 	float percent = difference / distance / 2;
 	sf::Vector2f offset = distanceVec * percent;
 
-	point1.position -= offset;
-	point2.position += offset;
+	if (!point1.pinned)
+		point1.position -= offset;
+	if (!point2.pinned)
+		point2.position += offset;
 }

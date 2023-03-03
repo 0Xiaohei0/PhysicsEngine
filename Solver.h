@@ -31,6 +31,8 @@ public:
 
 	VerletObject& addObject(sf::Vector2f position, float radius);
 
+	VerletObject& addObject(sf::Vector2f position, float radius, bool pinned);
+
 	Stick& addStick(VerletObject& p1, VerletObject& p2);
 
 	std::vector<VerletObject>& getObjects();
@@ -47,6 +49,8 @@ public:
 	float getTime() const;
 	void setSubStepsCount(uint32_t sub_steps);
 	float getStepDt() const;
+
+	void setConstraint(int start_x, int start_y, int width, int height);
 
 	void setGravity(sf::Vector2f gravity);
 };
