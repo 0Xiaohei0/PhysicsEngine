@@ -5,11 +5,15 @@ class Solver
 {
 private:
 	sf::Vector2f gravity = { 0.0f, 1000.0f };
-	uint32_t                  sub_steps = 1;
+	uint32_t                  sub_steps = 8;
 	std::vector<VerletObject> objectList;
 	std::vector<Stick> stickList;
 	float frame_dt = 0.01666666666f;
 	float time = 0.0f;
+	int CONSTRAINT_WIDTH = 880;
+	int HEIGHT = 720;
+	int START_X = 400;
+	int START_Y = 0;
 
 public:
 	Solver();
@@ -20,6 +24,8 @@ public:
 	void applyGravity();
 
 	void updatePositions(float dt);
+
+	void ConstrainObjects();
 
 	void updateSticks();
 
@@ -41,4 +47,6 @@ public:
 	float getTime() const;
 	void setSubStepsCount(uint32_t sub_steps);
 	float getStepDt() const;
+
+	void setGravity(sf::Vector2f gravity);
 };

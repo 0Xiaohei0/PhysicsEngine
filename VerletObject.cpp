@@ -23,32 +23,6 @@ void VerletObject::updatePosition(float dt)
 	position = position + velocity + acceleration * dt * dt;
 	// Reset acceleration
 	acceleration = {};
-
-	// bound checking
-	float width = 880;
-	float height = 720;
-	float startx = 400;
-	float starty = 0;
-	float rightbound = position.x + radius;
-	float leftbound = position.x - radius;
-	float topbound = position.y - radius;
-	float bottombound = position.y + radius;
-	if (rightbound > width) {
-		position.x = width - radius;
-		position_old.x = position.x + velocity.x * bounce;
-	}
-	else if (leftbound < startx) {
-		position.x = startx + radius;
-		position_old.x = position.x + velocity.x * bounce;
-	}
-	if (bottombound > height) {
-		position.y = height - radius;
-		position_old.y = position.y + velocity.y * bounce;
-	}
-	else if (topbound < starty) {
-		position.y = starty + radius;
-		position_old.y = position.y + velocity.y * bounce;
-	}
 }
 
 void VerletObject::setVelocity(sf::Vector2f v, float dt)

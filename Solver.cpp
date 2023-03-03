@@ -25,6 +25,7 @@ void Solver::update()
 		updatePositions(step_dt);
 		solveCollisions();
 		updateSticks();
+		ConstrainObjects();
 	}
 }
 
@@ -52,6 +53,39 @@ void Solver::updateSticks()
 	}
 }
 
+void Solver::ConstrainObjects() {
+
+	for (auto& obj : objectList)
+	{
+		sf::Vector2f& position = obj.position;
+		sf::Vector2f& position_old = obj.position_old;
+		float& bounce = obj.bounce;
+		float& radius = obj.radius;
+		sf::Vector2f velocity = position - position_old;
+
+		float rightbound = position.x + radius;
+		float leftbound = position.x - radius;
+		float topbound = position.y - radius;
+		float bottombound = position.y + radius;
+		if (rightbound > CONSTRAINT_WIDTH) {
+			position.x = CONSTRAINT_WIDTH - radius;
+			position_old.x = position.x + velocity.x * bounce;
+		}
+		else if (leftbound < START_X) {
+			position.x = START_X + radius;
+			position_old.x = position.x + velocity.x * bounce;
+		}
+		if (bottombound > HEIGHT) {
+			position.y = HEIGHT - radius;
+			position_old.y = position.y + velocity.y * bounce;
+		}
+		else if (topbound < START_Y) {
+			position.y = START_Y + radius;
+			position_old.y = position.y + velocity.y * bounce;
+		}
+	}
+}
+
 VerletObject& Solver::addObject(sf::Vector2f position, float radius)
 {
 	objectList.emplace_back(position, radius);
@@ -60,11 +94,7 @@ VerletObject& Solver::addObject(sf::Vector2f position, float radius)
 
 Stick& Solver::addStick(VerletObject& p1, VerletObject& p2)
 {
-	std::cout << "p1-2: " << p1.position.x << ',' << p1.position.y << std::endl;
 	stickList.emplace_back(p1, p2);
-
-	std::cout << objectList.front().position.x << ',' << objectList.front().position.y << std::endl;
-	std::cout << stickList.back().point1.position.x << ',' << stickList.back().point1.position.y << std::endl;
 	return stickList.back();
 }
 
@@ -124,4 +154,9 @@ void Solver::setSubStepsCount(uint32_t sub_steps)
 float Solver::getStepDt() const
 {
 	return frame_dt / static_cast<float>(sub_steps);
+}
+
+void Solver::setGravity(sf::Vector2f gravity)
+{
+	this->gravity = gravity;
 }

@@ -20,6 +20,7 @@ void BoxesDemo::runDemo() {
 	FPSCounterText.setCharacterSize(24);
 	FPSCounterText.setFillColor(sf::Color::Red);
 	window.setFramerateLimit(frame_rate);
+	//solver.setGravity(sf::Vector2f(0.0f, 0.0f));
 
 	//setup Objects
 	std::vector< std::reference_wrapper<VerletObject>> points;
