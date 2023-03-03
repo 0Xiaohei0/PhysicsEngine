@@ -5,6 +5,14 @@
 #include <list>
 #include "Renderer.h"
 
+static int ccw(sf::Vector2i A, sf::Vector2i B, sf::Vector2i C) {
+	return (C.y - A.y) * (B.x - A.x) > (B.y - A.y) * (C.x - A.x);
+};
+// Return true if line segments ABand CD intersect
+
+static bool intersect(sf::Vector2i A, sf::Vector2i B, sf::Vector2i C, sf::Vector2i D) {
+	return ccw(A, C, D) != ccw(B, C, D) and ccw(A, B, C) != ccw(A, B, D);
+};
 
 void ClothDemo::runDemo() {
 	sf::RenderWindow window(sf::VideoMode(WINDOW_SIZE_X, WINDOW_SIZE_Y), "Cloth Simulation");
@@ -31,7 +39,7 @@ void ClothDemo::runDemo() {
 	//std::cout << (CLOTH_HEIGHT / CLOTH_HOLE_SIZE) << std::endl;
 	for (int pos_y = CLOTH_START_Y; pos_y <= CLOTH_START_Y + CLOTH_HEIGHT - CLOTH_HOLE_SIZE; pos_y += CLOTH_HOLE_SIZE) {
 		for (int pos_x = CLOTH_START_X; pos_x <= CLOTH_START_X + CLOTH_WIDTH - CLOTH_HOLE_SIZE; pos_x += CLOTH_HOLE_SIZE) {
-			points.push_back(solver.addObject(sf::Vector2f(pos_x, pos_y), 2.0f, pos_y == CLOTH_START_Y));
+			points.push_back(solver.addObject(sf::Vector2f((float)pos_x, (float)pos_y), 2.0f, pos_y == CLOTH_START_Y));
 		}
 	}
 
@@ -50,6 +58,26 @@ void ClothDemo::runDemo() {
 	}
 	solver.setObjectVelocity(points.back(), sf::Vector2f(300.0f, 0.0f));
 
+	if (!sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	{
+		lastMousePosition = sf::Vector2i(-1, -1);
+	}
+	else {
+		if (lastMousePosition.x != -1) {
+			sf::Vector2i currentMousePosition = sf::Mouse::getPosition(window);
+			//sf::Vector2i cutVector = currentMousePosition - lastMousePosition;
+
+			std::vector<Stick>& sticks = solver.getSticks();
+			for (int i = 0; i < sticks.size(); i++) {
+				Stick& stick = sticks.at(i);
+				sf::Vector2i stickVector = (sf::Vector2i)(stick.point1.position - stick.point2.position);
+				if (intersect((sf::Vector2i)stick.point1.position, (sf::Vector2i)stick.point2.position,
+					currentMousePosition, lastMousePosition)) {
+					sticks.erase(sticks.begin() + i);
+				}
+			}
+		}
+	}
 
 	while (window.isOpen())
 	{
