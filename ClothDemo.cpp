@@ -29,7 +29,9 @@ void ClothDemo::runDemo() {
 	FPSCounterText.setFillColor(sf::Color::Red);
 	window.setFramerateLimit(frame_rate);
 	//solver.setGravity(sf::Vector2f(0.0f, 0.0f));
-	solver.setConstraint(0, 0, 1280, 720);
+	solver.setSubStepsCount(8);
+	solver.setConstraint(0, 0, 1280, 1000);
+	solver.setCheckForCollisions(false);
 
 	//setup Objects
 	std::vector< std::reference_wrapper<VerletObject>> points;
@@ -39,7 +41,7 @@ void ClothDemo::runDemo() {
 	//std::cout << (CLOTH_HEIGHT / CLOTH_HOLE_SIZE) << std::endl;
 	for (int pos_y = CLOTH_START_Y; pos_y <= CLOTH_START_Y + CLOTH_HEIGHT - CLOTH_HOLE_SIZE; pos_y += CLOTH_HOLE_SIZE) {
 		for (int pos_x = CLOTH_START_X; pos_x <= CLOTH_START_X + CLOTH_WIDTH - CLOTH_HOLE_SIZE; pos_x += CLOTH_HOLE_SIZE) {
-			points.push_back(solver.addObject(sf::Vector2f((float)pos_x, (float)pos_y), 2.0f, pos_y == CLOTH_START_Y));
+			points.push_back(solver.addObject(sf::Vector2f((float)pos_x, (float)pos_y), 0.0f, pos_y == CLOTH_START_Y));
 		}
 	}
 
@@ -58,26 +60,7 @@ void ClothDemo::runDemo() {
 	}
 	solver.setObjectVelocity(points.back(), sf::Vector2f(300.0f, 0.0f));
 
-	if (!sf::Mouse::isButtonPressed(sf::Mouse::Left))
-	{
-		lastMousePosition = sf::Vector2i(-1, -1);
-	}
-	else {
-		if (lastMousePosition.x != -1) {
-			sf::Vector2i currentMousePosition = sf::Mouse::getPosition(window);
-			//sf::Vector2i cutVector = currentMousePosition - lastMousePosition;
 
-			std::vector<Stick>& sticks = solver.getSticks();
-			for (int i = 0; i < sticks.size(); i++) {
-				Stick& stick = sticks.at(i);
-				sf::Vector2i stickVector = (sf::Vector2i)(stick.point1.position - stick.point2.position);
-				if (intersect((sf::Vector2i)stick.point1.position, (sf::Vector2i)stick.point2.position,
-					currentMousePosition, lastMousePosition)) {
-					sticks.erase(sticks.begin() + i);
-				}
-			}
-		}
-	}
 
 	while (window.isOpen())
 	{
@@ -96,9 +79,31 @@ void ClothDemo::runDemo() {
 		FPSCounterText.setString(std::to_string(fps.getFPS()));
 		window.draw(FPSCounterText);
 
+		sf::Vector2i currentMousePosition = sf::Mouse::getPosition(window);
+		if (!sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		{
+			lastMousePosition = sf::Vector2i(-1, -1);
+		}
+		else {
+			if (lastMousePosition.x != -1) {
+
+				//sf::Vector2i cutVector = currentMousePosition - lastMousePosition;
+
+				std::list<Stick>& sticks = solver.getSticks();
+				for (auto it = sticks.begin(); it != sticks.end(); ++it) {
+					Stick& stick = *it;
+					sf::Vector2i stickVector = (sf::Vector2i)(stick.point1.position - stick.point2.position);
+					if (intersect((sf::Vector2i)stick.point1.position, (sf::Vector2i)stick.point2.position,
+						currentMousePosition, lastMousePosition)) {
+						it = sticks.erase(it);
+					}
+				}
+			}
+		}
 
 		window.display();
 		solver.update();
+		lastMousePosition = currentMousePosition;
 	}
 }
 

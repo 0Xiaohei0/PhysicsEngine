@@ -5,13 +5,11 @@
 
 Solver::Solver() {
 	objectList.reserve(10000);
-	stickList.reserve(10000);
 }
 
 Solver::Solver(int SimulationUpdateRate, int subStepsCount)
 {
 	objectList.reserve(10000);
-	stickList.reserve(10000);
 	setSimulationUpdateRate(SimulationUpdateRate);
 	setSubStepsCount(subStepsCount);
 }
@@ -23,7 +21,8 @@ void Solver::update()
 	for (uint32_t i{ sub_steps }; i--;) {
 		applyGravity();
 		updatePositions(step_dt);
-		solveCollisions();
+		if (checkForCollisions)
+			solveCollisions();
 		updateSticks();
 		ConstrainObjects();
 	}
@@ -50,8 +49,8 @@ void Solver::updatePositions(float dt)
 
 void Solver::updateSticks()
 {
-	for (size_t i = 0; i < stickList.size(); i++) {
-		Stick& s = stickList.at(i);
+	for (auto& s : stickList)
+	{
 		s.updatePosition();
 	}
 }
@@ -111,7 +110,7 @@ std::vector<VerletObject>& Solver::getObjects() {
 	return objectList;
 }
 
-std::vector<Stick>& Solver::getSticks()
+std::list<Stick>& Solver::getSticks()
 {
 	return stickList;
 }
@@ -171,6 +170,11 @@ void Solver::setConstraint(int start_x, int start_y, int width, int height)
 	START_Y = start_y;
 	CONSTRAINT_WIDTH = width;
 	HEIGHT = height;
+}
+
+void Solver::setCheckForCollisions(bool doCheck)
+{
+	checkForCollisions = doCheck;
 }
 
 void Solver::setGravity(sf::Vector2f gravity)

@@ -2,7 +2,7 @@
 #include "BoxesDemo.h"
 #include "ClothDemo.h"
 
-static enum CurrentDemo
+enum CurrentDemo
 {
 	PARTICLE,
 	BOX,

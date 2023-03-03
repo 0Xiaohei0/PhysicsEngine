@@ -16,7 +16,7 @@ private:
 
 	const int CLOTH_WIDTH = 620;
 	const int CLOTH_HEIGHT = 620;
-	const int CLOTH_HOLE_SIZE = 100;
+	const int CLOTH_HOLE_SIZE = 10;
 	const int CLOTH_START_X = 200;
 	const int CLOTH_START_Y = 0;
 

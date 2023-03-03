@@ -1,5 +1,6 @@
 #pragma once
 #include "Stick.h"
+#include <list>
 
 class Solver
 {
@@ -7,13 +8,15 @@ private:
 	sf::Vector2f gravity = { 0.0f, 1000.0f };
 	uint32_t                  sub_steps = 8;
 	std::vector<VerletObject> objectList;
-	std::vector<Stick> stickList;
+	std::list<Stick> stickList;
+
 	float frame_dt = 0.01666666666f;
 	float time = 0.0f;
 	int CONSTRAINT_WIDTH = 880;
 	int HEIGHT = 720;
 	int START_X = 400;
 	int START_Y = 0;
+	bool checkForCollisions = true;
 
 public:
 	Solver();
@@ -36,7 +39,8 @@ public:
 	Stick& addStick(VerletObject& p1, VerletObject& p2);
 
 	std::vector<VerletObject>& getObjects();
-	std::vector<Stick>& getSticks();
+
+	std::list<Stick>& getSticks();
 
 	void setSimulationUpdateRate(int rate);
 
@@ -51,6 +55,8 @@ public:
 	float getStepDt() const;
 
 	void setConstraint(int start_x, int start_y, int width, int height);
+
+	void setCheckForCollisions(bool doCheck);
 
 	void setGravity(sf::Vector2f gravity);
 };
