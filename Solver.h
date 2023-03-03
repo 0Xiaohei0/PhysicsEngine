@@ -4,7 +4,7 @@
 class Solver
 {
 private:
-	sf::Vector2f gravity = { 0.0f, 3000.0f };
+	sf::Vector2f gravity = { 0.0f, 1000.0f };
 	uint32_t                  sub_steps = 1;
 	std::vector<VerletObject> objectList;
 	std::vector<Stick> stickList;

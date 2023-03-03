@@ -10,7 +10,7 @@ public:
 
 	float        radius = 10.0f;
 	sf::Color    color = sf::Color::White;
-	float		 bounce = 0.5f;
+	float		 bounce = 0.8f;
 	float		 friction = 0.999f;
 
 	VerletObject(sf::Vector2f position, float radius);

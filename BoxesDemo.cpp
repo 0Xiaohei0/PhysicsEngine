@@ -22,11 +22,19 @@ void BoxesDemo::runDemo() {
 	window.setFramerateLimit(frame_rate);
 
 	//setup Objects
-	VerletObject& p1 = solver.addObject(sf::Vector2f(500.0f, 200.0f), 10.0f);
-	VerletObject& p2 = solver.addObject(sf::Vector2f(530.0f, 200.0f), 10.0f);
-	solver.setObjectVelocity(p1, sf::Vector2f(300.0f, 0.3f));
+	std::vector< std::reference_wrapper<VerletObject>> points;
+	points.push_back(solver.addObject(sf::Vector2f(500.0f, 200.0f), 2.0f));
+	points.push_back(solver.addObject(sf::Vector2f(520.0f, 200.0f), 2.0f));
+	points.push_back(solver.addObject(sf::Vector2f(520.0f, 220.0f), 2.0f));
+	points.push_back(solver.addObject(sf::Vector2f(500.0f, 220.0f), 2.0f));
+	solver.setObjectVelocity(points.at(0), sf::Vector2f(300.0f, 0.3f));
 
-	solver.addStick(p1, p2);
+	solver.addStick(points.at(0), points.at(1));
+	solver.addStick(points.at(1), points.at(2));
+	solver.addStick(points.at(2), points.at(3));
+	solver.addStick(points.at(3), points.at(0));
+	solver.addStick(points.at(0), points.at(2));
+	solver.addStick(points.at(1), points.at(3));
 
 	while (window.isOpen())
 	{
