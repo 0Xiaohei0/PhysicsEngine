@@ -14,7 +14,7 @@ private:
 	const int WINDOW_SIZE_X = 1280;
 	const int WINDOW_SIZE_Y = 720;
 
-	const int CLOTH_WIDTH = 620;
+	const int CLOTH_WIDTH = 820;
 	const int CLOTH_HEIGHT = 620;
 	const int CLOTH_HOLE_SIZE = 10;
 	const int CLOTH_START_X = 200;

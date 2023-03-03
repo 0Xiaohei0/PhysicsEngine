@@ -28,7 +28,7 @@ void ClothDemo::runDemo() {
 	FPSCounterText.setCharacterSize(24);
 	FPSCounterText.setFillColor(sf::Color::Red);
 	window.setFramerateLimit(frame_rate);
-	//solver.setGravity(sf::Vector2f(0.0f, 0.0f));
+	solver.setGravity(sf::Vector2f(0.0f, 500.0f));
 	solver.setSubStepsCount(8);
 	solver.setConstraint(0, 0, 1280, 1000);
 	solver.setCheckForCollisions(false);
