@@ -58,7 +58,7 @@ void ClothDemo::runDemo() {
 			solver.addStick(points.at(i), points.at(rightIdx));
 		}
 	}
-	solver.setObjectVelocity(points.back(), sf::Vector2f(300.0f, 0.0f));
+	//solver.setObjectVelocity(points.back(), sf::Vector2f(300.0f, 0.0f));
 
 
 
