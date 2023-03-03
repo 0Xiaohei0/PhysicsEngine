@@ -25,15 +25,23 @@ void BoxesDemo::runDemo() {
 
 	//setup Objects
 	std::vector< std::reference_wrapper<VerletObject>> points;
-	points.push_back(solver.addObject(sf::Vector2f(500.0f, 200.0f), 2.0f));
-	points.push_back(solver.addObject(sf::Vector2f(550.0f, 200.0f), 2.0f));
-	points.push_back(solver.addObject(sf::Vector2f(550.0f, 250.0f), 2.0f));
-	points.push_back(solver.addObject(sf::Vector2f(500.0f, 250.0f), 2.0f));
-	solver.setObjectVelocity(points.at(0), sf::Vector2f(300.0f, 0.3f));
+	points.push_back(solver.addObject(sf::Vector2f(500.0f, 400.0f), 2.0f));
+	points.push_back(solver.addObject(sf::Vector2f(550.0f, 400.0f), 2.0f));
+	points.push_back(solver.addObject(sf::Vector2f(550.0f, 450.0f), 2.0f));
+	points.push_back(solver.addObject(sf::Vector2f(500.0f, 450.0f), 2.0f));
 
-	points.push_back(solver.addObject(sf::Vector2f(400.0f, 200.0f), 2.0f));
-	points.push_back(solver.addObject(sf::Vector2f(300.0f, 200.0f), 2.0f));
-	points.push_back(solver.addObject(sf::Vector2f(100.0f, 200.0f), 2.0f, true));
+
+	points.push_back(solver.addObject(sf::Vector2f(500.0f, 350.0f), 2.0f));
+	points.push_back(solver.addObject(sf::Vector2f(500.0f, 300.0f), 2.0f));
+	points.push_back(solver.addObject(sf::Vector2f(500.0f, 250.0f), 2.0f));
+	points.push_back(solver.addObject(sf::Vector2f(500.0f, 200.0f), 2.0f, true));
+	solver.setObjectVelocity(points.at(4), sf::Vector2f(300.0f, 0.3f));
+
+	points.push_back(solver.addObject(sf::Vector2f(800.0f, 350.0f), 10.0f));
+	points.push_back(solver.addObject(sf::Vector2f(800.0f, 300.0f), 2.0f));
+	points.push_back(solver.addObject(sf::Vector2f(800.0f, 250.0f), 2.0f));
+	points.push_back(solver.addObject(sf::Vector2f(800.0f, 200.0f), 2.0f, true));
+	solver.setObjectVelocity(points.at(8), sf::Vector2f(300.0f, 0.3f));
 
 
 
@@ -47,6 +55,11 @@ void BoxesDemo::runDemo() {
 	solver.addStick(points.at(0), points.at(4));
 	solver.addStick(points.at(4), points.at(5));
 	solver.addStick(points.at(5), points.at(6));
+	solver.addStick(points.at(6), points.at(7));
+
+	solver.addStick(points.at(8), points.at(9));
+	solver.addStick(points.at(9), points.at(10));
+	solver.addStick(points.at(10), points.at(11));
 
 	while (window.isOpen())
 	{
