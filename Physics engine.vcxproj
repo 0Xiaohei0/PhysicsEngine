@@ -136,6 +136,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BoxesDemo.cpp" />
+    <ClCompile Include="ClothDemo.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Solver.cpp" />
@@ -146,6 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BoxesDemo.h" />
+    <ClInclude Include="ClothDemo.h" />
     <ClInclude Include="Fps.h" />
     <ClInclude Include="particleImageDemo.h" />
     <ClInclude Include="Renderer.h" />
